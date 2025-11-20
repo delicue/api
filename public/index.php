@@ -14,17 +14,17 @@ $routes = require __DIR__ . '/../routes.php';
 $apiRouter = new ApiRouter();
 $uri = $_SERVER['REQUEST_URI'];
 
-if (array_key_exists($uri, $routes)) {
-    header('Content-Type: text/html');
-    view($routes[$_SERVER['REQUEST_URI']]);
+// if (array_key_exists($uri, $routes)) {
+//     header('Content-Type: text/html');
+//     view($routes[$_SERVER['REQUEST_URI']]);
 
-}
-else {
-    $apiRouter->get($uri, function() {
+// }
+// else {
+    $apiRouter->get('/', function() {
         header('Content-Type: application/json');
-        require __DIR__ . '/../data/users.json';
+        jsonData('users');
     });
-}
+// }
 // else {
 //     http_response_code(404);
 // }

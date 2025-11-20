@@ -2,8 +2,6 @@
 
 namespace App\Http;
 
-use App\Log;
-
 class Router {
     protected array $routes = [];
     protected array $routeData = [];
