@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Http;
+namespace Api;
 
 class Router {
     protected array $routes = [];
@@ -10,9 +10,17 @@ class Router {
         return $this->routes;
     }
 
-    public function register($uri, $method, $action, array $data = []) {
+    public function register($uri, $method, $action, array $data = []): void {
         $this->routes[$method][$uri] = $action;
         $this->routeData[$uri] = $data;
+    }
+
+    public function get($uri, $action, $data = []): void {
+        $this->register($uri, 'GET', $action, $data);
+    }
+
+    public function post($uri, $action, $data = []): void {
+        $this->register($uri, 'POST', $action, $data);
     }
 
     /**
@@ -36,6 +44,6 @@ class Router {
             }
         }
         http_response_code(404);
-        return view('errors/404.view');
+        return view('index');
     }
 }

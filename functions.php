@@ -10,3 +10,11 @@ function jsonData(string $path)
 {
     require __DIR__ . "/data/{$path}.json";
 }
+
+function dd($data)
+{
+    echo '<pre>';
+    var_dump($data);
+    echo '</pre>';
+    exit();
+}

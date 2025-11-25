@@ -1,39 +1,35 @@
 <?php
 
-use Api\ApiRouter;
-use Api\Database;
+use Api\Router;
+use Api\Database as DB;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../functions.php';
 
-// $api = [
-//     '/users' => $db->isValidApiKey('test') ? 'data/users.json' : null,
-//     '/posts' => $db->isValidApiKey('test') ? 'data/posts.json' : null,
-// ];
+DB::config(__DIR__ . '/../data/database.sqlite');
 
-$routes = require __DIR__ . '/../routes.php';
-
-$apiRouter = new ApiRouter();
-$url = parse_url($_SERVER['REQUEST_URI']);
-$uri = $url['path'];
+dd($db);
+$router = new Router();
+$uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 $method = $_SERVER['REQUEST_METHOD'];
 
-if (array_key_exists($uri, $routes)) {
+$router->get('/', function(): void {
     header('Content-Type: text/html');
-    view($routes[$_SERVER['REQUEST_URI']]);
-    return;
-}
+    view('index');
+});
 
-$apiRouter->get('/users', function() {
-    $apiKey = $_GET['apiKey'];
-    $db = Database::getInstance();
-    if($db->isValidApiKey($apiKey)){
+$router->get('/users', function(): void {
+    $apiKey = $_GET['apiKey'] ?? null;
+    $db = DB::getInstance();
+
+    if($apiKey && $db->isValidApiKey($apiKey)){
         header('Content-Type: application/json');
-        return jsonData('users');
+        echo json_encode($db->fetchAll("select * from users"));
     } else {
+        header('Content-Type: application/json');
         http_response_code(403);
-        return "Unauthorized";
+        echo json_encode(['403' => "Unauthorized"]);
     }
 });
 
-$apiRouter->dispatch($uri, $method);
+$router->dispatch($uri, $method);

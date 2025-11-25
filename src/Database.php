@@ -3,76 +3,68 @@
 namespace Api;
 
 use PDO;
+use PDOException;
+use PDOStatement;
 
 class Database
 {
-    private static $instance = null;
-    private $connection;
+    private static $instance;
+    private PDO $connection;
 
-    private function __construct() {
+    private function __construct($dsn)
+    {
         try {
-            $this->connection = new PDO('sqlite:' . __DIR__ . '/databases/database.sqlite');
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->connection->exec("CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL
-            )");
-        } catch (\PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
+            $this->connection = new PDO("sqlite:{$dsn}", options: [
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        } catch (PDOException $exception) {
+            die("Error: {$exception->getMessage()}");
         }
     }
 
-    public static function getInstance(): Database {
-        self::$instance ??= new self();
-        return self::$instance;
+    public static function getInstance()
+    {
+        return static::$instance;
     }
 
-    public function getConnection(): PDO {
-        return $this->connection;
+    public static function config(string $dsn)
+    {
+        static::$instance = new self($dsn);
+    }
+
+    public function query($query, $params = [])
+    {
+        $statement = $this->connection->prepare($query);
+        $statement->execute($params);
+        return $statement;
+    }
+
+    public function fetch($query, $params = [])
+    {
+        return self::query($query, $params)->fetch();
+    }
+
+    public function fetchAll($query, $params = [])
+    {
+        return self::query($query, $params)->fetchAll();
     }
 
     /**
-     * Finds all records in specified query.
-     * @param mixed $query
-     * @param mixed $params
-     * @return array
+     * Creates a new table in the database, automatically including an `id` column in the table.
+     * @param string $table
+     * @param array $columns
+     * @return void
      */
-    public static function fetchAll($query, $params = []): array {
-        $stmt = self::getInstance()
-            ->getConnection()
-            ->prepare($query);
-        $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function createTable(string $table, $columns): bool|PDOStatement {
+        $statement = self::query("CREATE TABLE IF NOT EXISTS :table (:columns)", [
+            ':table' => $table,
+            ':columns' => implode(', ', $columns)
+        ]);
+
+        return $statement;
     }
 
-    /**
-     * Finds a single record from the database.
-     *
-     * @param [type] $query
-     * @param array $params
-     * @return array|null
-     */
-    public static function fetchOne($query, $params = []): ?array {
-        $stmt = self::getInstance()
-            ->getConnection()
-            ->prepare($query);
-        $stmt->execute($params);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result === false ? null : $result;
-    }
-
-    public static function execute($query, $params = []): bool {
-        $stmt = self::getInstance()->getConnection()->prepare($query);
-        return $stmt->execute($params);
-    }
-
-    public static function all($table): array {
-        $query = "SELECT * FROM :table";
-        return self::fetchAll($query, [$table]);
-    }
-
-    public static function count($table): int {
+    public function count($table): int {
         $result = self::fetchOne("SELECT COUNT(*) as count FROM :table", [$table]);
         return $result ? (int)$result['count'] : 0;
     }
@@ -83,5 +75,18 @@ class Database
         $stmt->bindParam(':key', $apiKey);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Finds a single record from the database.
+     *
+     * @param [type] $query
+     * @param array $params
+     * @return array|null
+     */
+    public function fetchOne($query, $params = []): ?array {
+        $stmt = self::query($query, $params);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result === false ? null : $result;
     }
 }
