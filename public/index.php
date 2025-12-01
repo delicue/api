@@ -8,7 +8,6 @@ require __DIR__ . '/../functions.php';
 
 DB::config(__DIR__ . '/../data/database.sqlite');
 
-dd($db);
 $router = new Router();
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 $method = $_SERVER['REQUEST_METHOD'];

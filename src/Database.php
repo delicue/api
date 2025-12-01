@@ -71,8 +71,8 @@ class Database
 
     public function isValidApiKey($apiKey)
     {
-        $stmt = $this->connection->prepare('SELECT COUNT(*) FROM api_keys WHERE key = :key');
-        $stmt->bindParam(':key', $apiKey);
+        $stmt = $this->connection->prepare('SELECT COUNT(*) FROM api_keys WHERE api_key = :api_key');
+        $stmt->bindParam(':api_key', $apiKey);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
