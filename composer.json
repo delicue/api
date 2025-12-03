@@ -1,6 +1,7 @@
 {
     "name": "delique/api",
     "description": "Api package to access database tables.",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "Delique\\Api\\": "src/"
