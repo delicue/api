@@ -33,6 +33,7 @@ function fetchApiJson($table): void {
 
 $router->get('/users', fn() => fetchApiJson('users'));
 $router->get('/posts', fn() => fetchApiJson('posts'));
+
 $router->post('/request-api-key', function(): void {
     $db = DB::getInstance();
     $newApiKey = bin2hex(random_bytes(16));

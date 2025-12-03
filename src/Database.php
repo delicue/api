@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace Delique\Api;
 
 use PDO;
 use PDOException;
@@ -14,7 +14,7 @@ class Database
     private function __construct($dsn)
     {
         try {
-            $this->connection = new PDO("sqlite:{$dsn}", options: [
+            $this->connection = new PDO($dsn, options: [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
         } catch (PDOException $exception) {
@@ -64,6 +64,11 @@ class Database
         return $statement;
     }
 
+    /**
+     * Count the amount of records in a table.
+     * @param mixed $table
+     * @return int
+     */
     public function count($table): int {
         $result = self::fetchOne("SELECT COUNT(*) as count FROM :table", [$table]);
         return $result ? (int)$result['count'] : 0;

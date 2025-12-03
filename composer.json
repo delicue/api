@@ -1,9 +1,13 @@
 {
     "name": "delique/api",
+    "description": "Api package to access database tables.",
     "autoload": {
         "psr-4": {
-            "Api\\": "src/"
+            "Delique\\Api\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "php": ">=8.0",
+        "ext-pdo": "*"
+    }
 }
