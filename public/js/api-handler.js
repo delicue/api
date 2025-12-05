@@ -15,3 +15,4 @@ function fetchApi(url, triggerElementId, event, targetElementId) {
 
 fetchApi(`/users`, 'fetch-users', 'click', 'users-data');
 fetchApi('/posts', 'fetch-posts', 'click', 'posts-data');
+fetchApi('/request-api-key', 'request-api-key', 'click', 'api-key-response');

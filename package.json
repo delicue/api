@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "dev-tailwindcss" : "npx @tailwindcss/cli -i ./views/css/tailwindstyles.css -o ./public/css/main.css --watch"
+  },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.17",
     "tailwindcss": "^4.1.17"

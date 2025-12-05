@@ -18,3 +18,8 @@ function dd($data)
     echo '</pre>';
     exit();
 }
+
+function app(string $path): void
+{
+    require __DIR__ . "/src/app/{$path}.php";
+}

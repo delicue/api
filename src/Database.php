@@ -94,4 +94,12 @@ class Database
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result === false ? null : $result;
     }
+
+    public function createApiKey($apiKey): bool|PDOStatement {
+        $statement = self::query("INSERT INTO api_keys (api_key) VALUES (:api_key)", [
+            ':api_key' => $apiKey
+        ]);
+
+        return $statement;
+    }
 }

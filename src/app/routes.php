@@ -1,12 +1,7 @@
 <?php
 
-use Delique\Api\Router;
 use Delique\Api\Database as DB;
-
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../functions.php';
-
-DB::config('sqlite:' . __DIR__ . '/../data/database.sqlite');
+use Delique\Api\Router;
 
 $router = new Router();
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
@@ -33,7 +28,6 @@ function fetchApiJson($table): void {
 
 $router->get('/users', fn() => fetchApiJson('users'));
 $router->get('/posts', fn() => fetchApiJson('posts'));
-
 $router->post('/request-api-key', function(): void {
     $db = DB::getInstance();
     $newApiKey = bin2hex(random_bytes(16));
