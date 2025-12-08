@@ -1,6 +1,6 @@
 <?php
 
-use Delique\Api\Database as DB;
+use App\Database as DB;
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../functions.php';

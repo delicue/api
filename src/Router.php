@@ -1,6 +1,6 @@
 <?php 
 
-namespace Delique\Api;
+namespace App;
 
 class Router {
     protected array $routes = [];

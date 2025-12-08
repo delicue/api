@@ -1,6 +1,6 @@
 <?php
 
-namespace Delique\Api;
+namespace App;
 
 use PDO;
 use PDOException;
@@ -16,6 +16,23 @@ class Database
         try {
             $this->connection = new PDO($dsn, options: [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+            // create users table if it doesn't exist
+            $this->createTable('users', [
+                'id INTEGER PRIMARY KEY AUTOINCREMENT',
+                'name TEXT NOT NULL',
+                'email TEXT NOT NULL UNIQUE'
+            ]);
+            // create posts table if it doesn't exist
+            $this->createTable('posts', [
+                'id INTEGER PRIMARY KEY AUTOINCREMENT',
+                'title TEXT NOT NULL',
+                'content TEXT NOT NULL'
+            ]);
+            // create api_keys table if it doesn't exist
+            $this->createTable('api_keys', [
+                'id INTEGER PRIMARY KEY AUTOINCREMENT',
+                'api_key TEXT NOT NULL UNIQUE'
             ]);
         } catch (PDOException $exception) {
             die("Error: {$exception->getMessage()}");
@@ -56,12 +73,7 @@ class Database
      * @return void
      */
     public function createTable(string $table, $columns): bool|PDOStatement {
-        $statement = self::query("CREATE TABLE IF NOT EXISTS :table (:columns)", [
-            ':table' => $table,
-            ':columns' => implode(', ', $columns)
-        ]);
-
-        return $statement;
+        return self::query("CREATE TABLE IF NOT EXISTS $table (" . implode(', ', $columns) . ")", []);
     }
 
     /**

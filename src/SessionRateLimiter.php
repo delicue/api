@@ -1,6 +1,6 @@
 <?php
 
-namespace Delique\Api;
+namespace App;
 
 class SessionRateLimiter {
     private $limit;

@@ -1,7 +1,7 @@
 <?php
 
-use Delique\Api\Database as DB;
-use Delique\Api\Router;
+use App\Database as DB;
+use App\Router;
 
 $router = new Router();
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
@@ -33,8 +33,8 @@ $router->post('/request-api-key', function(): void {
     $newApiKey = bin2hex(random_bytes(16));
     $db->createApiKey($newApiKey);
 
-    header('Content-Type: application/json');
-    echo json_encode(['apiKey' => $newApiKey]);
+    header('Content-Type: text/plain');
+    echo $newApiKey;
 });
 
 $router->dispatch($uri, $method);
