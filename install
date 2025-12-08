@@ -1,0 +1,4 @@
+<?php
+
+exec('composer install && npm install');
+exec('mkdir data');

@@ -19,7 +19,13 @@ function dd($data)
     exit();
 }
 
-function app(string $path): void
+function app(string | array $path): void
 {
+    if (is_array($path)) {
+        foreach ($path as $p) {
+            require __DIR__ . "/src/app/{$p}.php";
+        }
+        return;
+    }
     require __DIR__ . "/src/app/{$path}.php";
 }

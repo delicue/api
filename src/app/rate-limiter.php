@@ -3,7 +3,7 @@
 
 use App\SessionRateLimiter;
 
-$limiter = new SessionRateLimiter(5, 60); // 2 requests per 60 seconds
+$limiter = new SessionRateLimiter(60, 60); // 60 requests per 60 seconds
 
 if ($limiter->allowRequest()) {
     // echo "Request allowed. Remaining attempts: " . $limiter->getRemainingAttempts() . "\n";

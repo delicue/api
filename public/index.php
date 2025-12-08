@@ -5,10 +5,10 @@ use App\Database as DB;
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../functions.php';
 
-session_start();
+exec('npx tailwindcss -i ./views/css/tailwindstyles.css -o ./public/css/main.css --minify');
 
-app('rate-limiter');
+session_start();
 
 DB::config('sqlite:' . __DIR__ . '/../data/database.sqlite');
 
-app('routes');
+app(['rate-limiter', 'routes']);
