@@ -1,4 +1,4 @@
-# API
+# API Manager
 
 ## Prerequisites
 - PHP ^8.4
