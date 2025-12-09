@@ -2,9 +2,12 @@
 
 namespace App;
 
+/**
+ * Simple Router class to handle route registration and dispatching
+ */
 class Router {
     protected array $routes = [];
-    protected array $routeData = [];
+    protected array $data = [];
 
     public function getRoutes(): array {
         return $this->routes;
@@ -12,7 +15,7 @@ class Router {
 
     public function register($uri, $method, $action, array $data = []): void {
         $this->routes[$method][$uri] = $action;
-        $this->routeData[$uri] = $data;
+        $this->data[$uri] = $data;
     }
 
     public function get($uri, $action, $data = []): void {
@@ -32,7 +35,7 @@ class Router {
         if (isset($this->routes[$method][$uri])) {
             $action = $this->routes[$method][$uri];
             if (is_callable($action)) {
-                return call_user_func($action, ...$this->routeData[$uri]);
+                return call_user_func($action, ...$this->data[$uri]);
             } elseif (is_string($action)) {
                 [$controller, $method] = explode('@', $action);
                 if (class_exists($controller)) {

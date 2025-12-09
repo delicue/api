@@ -11,4 +11,8 @@ session_start();
 
 DB::config('sqlite:' . __DIR__ . '/../data/database.sqlite');
 
-app(['rate-limiter', 'routes']);
+app([
+    'rate-limiter',
+    'routes',
+    // 'middleware',
+]);
