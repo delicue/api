@@ -37,15 +37,20 @@ $router->get('/', function(): void {
     header('Content-Type: text/html');
     view('index');
 });
-$router->get('/test', function(): void {
-    header('Content-Type: application/json');
-    echo json_encode(['message' => 'This is a test page.']);
-});
+$router->post('/login', function(): void {
+    
+}, ['email' =>  $_POST['email'] ?? '', 'password' => $_POST['password'] ?? '']);
 // API Routes
 $router->get('/users', fn() => fetchApiJson('users'));
 $router->get('/posts', fn() => fetchApiJson('posts'));
 $router->post('/request-api-key', function(): void {
     $db = DB::getInstance();
+    if($db->count('api_keys') >= 10){
+        header('Content-Type: application/json');
+        http_response_code(429);
+        echo json_encode(['429' => "API Key distribution limit reached."]);
+        return;
+    }
     $newApiKey = bin2hex(random_bytes(16));
     $db->createApiKey($newApiKey);
 

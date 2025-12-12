@@ -16,9 +16,9 @@
     </header>
 
     <nav class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700">
-        <div class="container mx-auto px-6 py-3 flex space-x-4">
-            <a href="/" class="text-slate-300 hover:text-white font-medium transition-colors">Home</a>
-            <a href="/test" class="text-slate-300 hover:text-white font-medium transition-colors">Test Page</a>
+        <div class="container mx-auto px-6 py-3 grid sm:grid-cols-2 gap-4 place-items-center">
+            <a href="/" class="text-slate-600 hover:text-white font-medium transition-colors" type="button">Home</a>
+            <a href="/test" class="text-slate-300 hover:text-white font-medium transition-colors" type="button">Test Page</a>
         </div>
     </nav>
 

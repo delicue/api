@@ -17,23 +17,6 @@ class Database
             $this->connection = new PDO($dsn, options: [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
-            // create users table if it doesn't exist
-            $this->createTable('users', [
-                'id INTEGER PRIMARY KEY AUTOINCREMENT',
-                'name TEXT NOT NULL',
-                'email TEXT NOT NULL UNIQUE'
-            ]);
-            // create posts table if it doesn't exist
-            $this->createTable('posts', [
-                'id INTEGER PRIMARY KEY AUTOINCREMENT',
-                'title TEXT NOT NULL',
-                'content TEXT NOT NULL'
-            ]);
-            // create api_keys table if it doesn't exist
-            $this->createTable('api_keys', [
-                'id INTEGER PRIMARY KEY AUTOINCREMENT',
-                'api_key TEXT NOT NULL UNIQUE'
-            ]);
         } catch (PDOException $exception) {
             die("Error: {$exception->getMessage()}");
         }
@@ -78,12 +61,17 @@ class Database
 
     /**
      * Count the amount of records in a table.
-     * @param mixed $table
+     * @param string $table
      * @return int
      */
-    public function count($table): int {
-        $result = self::fetchOne("SELECT COUNT(*) as count FROM :table", [$table]);
-        return $result ? (int)$result['count'] : 0;
+    public function count(string $table): int {
+        // Only allow alphanumeric and underscore characters in table names
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+            throw new \InvalidArgumentException('Invalid table name');
+        }
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM {$table}");
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
     }
 
     public function isValidApiKey($apiKey)
