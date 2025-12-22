@@ -4,8 +4,6 @@ namespace App;
 
 class Session
 {
-    protected static $session = [];
-
     public static function get(string $key)
     {
         return $_SESSION[$key] ?? null;
@@ -16,16 +14,56 @@ class Session
         $_SESSION[$key] = $value;
     }
 
-    public static function login(int $id, string $username): void
+    public static function destroy(): void
     {
-        $user = Database::getInstance()->fetchOne("select * from users where id = :id and name = :name", ['id' => $id, 'name' => $username]);
-        if (!$user) {
-            throw new \Exception("User not found");
-        }
-        self::set('user', [
-            'id' => $user['id'],
-            'name' => $user['name'],
-            'email' => $user['email'],
+        session_unset();
+        session_destroy();
+    }
+
+    public static function isLoggedIn(): bool
+    {
+        return isset($_SESSION['user']);
+    }
+
+    public static function logout(): void
+    {
+        self::destroy();
+    }
+
+    public static function getUser(): ?array
+    {
+        return self::get('user');
+    }
+
+    public static function register(string $username, string $password): void
+    {
+        $db = Database::getInstance();
+        $db->query("insert into users (name, password) values (:username, :password)", [
+            'username' => $username,
+            'password' => password_hash($password, PASSWORD_DEFAULT)
         ]);
+        self::login($username, $password);
+    }
+
+    public static function login(string $username, $password): void
+    {
+        try {
+            $user = Database::getInstance()->fetchOne("select * from users where name = :username", [
+                'username' => $username,
+            ]);
+
+            if (!$user) throw new \Exception("User not found");
+
+            if (!password_verify($password, $user['password'])) {
+                throw new \Exception("Invalid password");
+            }
+            
+            self::set('user', [
+                'username' => $user['name'],
+            ]);
+        } catch (\Exception $e) {
+            throw new \Exception("Login failed: " . $e->getMessage());
+        }
+
     }
 }

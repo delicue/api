@@ -4,4 +4,5 @@ use App\Database;
 use App\Models\User;
 use App\Session;
 
-Session::login(1, 'john_doe');
+Session::register('joe', 'password123');
+Session::login('joe', 'password123');

@@ -15,7 +15,8 @@ DB::config('sqlite:' . __DIR__ . '/../data/database.sqlite');
 DB::getInstance()->createTable('users', [
     'id INTEGER PRIMARY KEY AUTOINCREMENT',
     'name TEXT NOT NULL',
-    'email TEXT NOT NULL UNIQUE'
+    'email TEXT NOT NULL UNIQUE',
+    'password TEXT NOT NULL'
 ]);
 // create posts table if it doesn't exist
 DB::getInstance()->createTable('posts', [
