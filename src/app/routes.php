@@ -2,12 +2,13 @@
 
 use App\Database as DB;
 use App\Router;
+use App\Session;
 
 $router = new Router();
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 $method = $_SERVER['REQUEST_METHOD'];
 
-function getView($uri) {  
+function getView($uri): void {  
     global $router;
     $router?->get($uri, function() use (&$uri): void {
         header('Content-Type: text/html');
@@ -37,12 +38,20 @@ $router->get('/', function(): void {
     header('Content-Type: text/html');
     view('index');
 });
-$router->post('/login', function(): void {
-    
-}, ['email' =>  $_POST['email'] ?? '', 'password' => $_POST['password'] ?? '']);
+
 // API Routes
 $router->get('/users', fn() => fetchApiJson('users'));
 $router->get('/posts', fn() => fetchApiJson('posts'));
+
+// Auth Routes
+$router->get('/login', function(): void {
+    view('login');
+});
+$router->post('/logout', function(): void {
+    Session::logout();
+    header('Location: /');
+    exit();
+});
 $router->post('/request-api-key', function(): void {
     $db = DB::getInstance();
     if($db->count('api_keys') >= 10){

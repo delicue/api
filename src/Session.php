@@ -38,7 +38,14 @@ class Session
     public static function register(string $username, string $password): void
     {
         $db = Database::getInstance();
-        $db->query("insert into users (name, password) values (:username, :password)", [
+        // Check if user already exists
+        $existingUser = $db->fetchOne("select * from users where username = :username", [
+            'username' => $username,
+        ]);
+        if ($existingUser) {
+            throw new \Exception("User already exists");
+        }
+        $db->query("insert into users (username, password) values (:username, :password)", [
             'username' => $username,
             'password' => password_hash($password, PASSWORD_DEFAULT)
         ]);
@@ -48,7 +55,7 @@ class Session
     public static function login(string $username, $password): void
     {
         try {
-            $user = Database::getInstance()->fetchOne("select * from users where name = :username", [
+            $user = Database::getInstance()->fetchOne("select * from users where username = :username", [
                 'username' => $username,
             ]);
 
@@ -59,7 +66,7 @@ class Session
             }
             
             self::set('user', [
-                'username' => $user['name'],
+                'username' => $user['username'],
             ]);
         } catch (\Exception $e) {
             throw new \Exception("Login failed: " . $e->getMessage());

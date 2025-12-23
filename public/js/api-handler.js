@@ -31,6 +31,44 @@ function requestApiKey(url, triggerElementId, event, targetElementId) {
     });
 }
 
+function login() {
+    const loginForm = document.getElementById('loginForm');
+    if (!loginForm) return;
+    
+    loginForm.addEventListener('submit', async (event) => {
+        // Prevent default form submission behavior
+        event.preventDefault();
+
+        try {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            
+            if (!usernameInput.value || !passwordInput.value) {
+                console.error('Username and password are required');
+                return;
+            }
+            
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `username=${encodeURIComponent(usernameInput.value)}&password=${encodeURIComponent(passwordInput.value)}`,
+            });
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                const data = await response.text();
+                console.log('Login failed:', data);
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', login);
+
 fetchApi(`/users`, 'fetch-users', 'click', 'users-data');
 fetchApi('/posts', 'fetch-posts', 'click', 'posts-data');
 requestApiKey('/request-api-key', 'request-api-key', 'click', 'api-key-response');

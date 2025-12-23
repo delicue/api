@@ -14,8 +14,7 @@ DB::config('sqlite:' . __DIR__ . '/../data/database.sqlite');
 // create users table if it doesn't exist
 DB::getInstance()->createTable('users', [
     'id INTEGER PRIMARY KEY AUTOINCREMENT',
-    'name TEXT NOT NULL',
-    'email TEXT NOT NULL UNIQUE',
+    'username TEXT NOT NULL',
     'password TEXT NOT NULL'
 ]);
 // create posts table if it doesn't exist
@@ -33,5 +32,5 @@ DB::getInstance()->createTable('api_keys', [
 app([
     'rate-limiter',
     'routes',
-    // 'middleware',
+    'middleware',
 ]);

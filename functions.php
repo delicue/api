@@ -6,6 +6,12 @@ function view(string $viewPath, array $data = []): void
     require __DIR__ . "/views/{$viewPath}.view.php";
 }
 
+function partial(string $partialPath, array $data = []): void
+{
+    extract($data);
+    require __DIR__ . "/views/{$partialPath}.php";
+}
+
 function jsonData(string $path)
 {
     require __DIR__ . "/data/{$path}.json";
@@ -28,4 +34,10 @@ function app(string | array $path): void
         return;
     }
     require __DIR__ . "/src/app/{$path}.php";
+}
+
+function redirect(string $url): void
+{
+    header("Location: {$url}");
+    exit();
 }
