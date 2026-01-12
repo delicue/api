@@ -9,7 +9,7 @@ function view(string $viewPath, array $data = []): void
 function partial(string $partialPath, array $data = []): void
 {
     extract($data);
-    require __DIR__ . "/views/{$partialPath}.php";
+    require __DIR__ . "/views/partials/{$partialPath}.php";
 }
 
 function jsonData(string $path)

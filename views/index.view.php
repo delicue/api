@@ -1,4 +1,4 @@
-<?php partial('partials/header'); ?>
+<?php partial('header'); ?>
 
 <!-- Main Content -->
 <main class="container mx-auto px-6 py-12">
@@ -62,4 +62,6 @@
     </div>
 </main>
 
-<?php partial('partials/footer'); ?>
+<script src="js/api-handler.js"></script>
+
+<?php partial('footer'); ?>

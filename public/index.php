@@ -5,10 +5,13 @@ use App\Database as DB;
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../functions.php';
 
+// Compile Tailwind CSS to main.css
 exec('npx tailwindcss -i ./views/css/tailwindstyles.css -o ./public/css/main.css --minify');
 
+// Start the session
 session_start();
 
+// Configure the database connection
 DB::config('sqlite:' . __DIR__ . '/../data/database.sqlite');
 
 // create users table if it doesn't exist
