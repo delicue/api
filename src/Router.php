@@ -46,7 +46,6 @@ class Router {
                 }
             }
         }
-        http_response_code(404);
-        return view('index');
+        return not_found();
     }
 }

@@ -41,3 +41,10 @@ function redirect(string $url): void
     header("Location: {$url}");
     exit();
 }
+
+function not_found(): void
+{
+    http_response_code(404);
+    view('errors/404');
+    exit();
+}

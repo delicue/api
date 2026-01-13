@@ -1,14 +1,16 @@
 /* Login */
-function requestLogin(url, elements = { usernameInputId, passwordInputId, loginButtonId, messageDisplayId }) {
+function handleLoginForm(elements = { usernameInputId, passwordInputId, formdId, messageDisplayId }) {
+    const { usernameInputId, passwordInputId, formId, messageDisplayId } = elements;
+    const form = document.getElementById(formId);
 
-    const { usernameInputId, passwordInputId, loginButtonId, messageDisplayId } = elements;
-    const loginButton = document.getElementById(loginButtonId);
-    
-    loginButton.addEventListener('click', async () => {
+    console.log('Login form handler initialized with elements:', elements);
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('Login button clicked');
         try {
             const usernameInput = document.getElementById(usernameInputId);
             const passwordInput = document.getElementById(passwordInputId);
-            const response = await fetch(url, {
+            const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -26,8 +28,8 @@ function requestLogin(url, elements = { usernameInputId, passwordInputId, loginB
 const loginElements = {
     usernameInputId: 'username',
     passwordInputId: 'password',
-    loginButtonId: 'loginButton',
+    formId: 'loginForm',
     messageDisplayId: 'messageDisplay',
 };
 
-requestLogin('/login', loginElements);
+handleLoginForm(loginElements);

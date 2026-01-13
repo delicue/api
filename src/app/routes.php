@@ -42,11 +42,30 @@ $router->get('/', function(): void {
 // API Routes
 $router->get('/users', fn() => fetchApiJson('users'));
 $router->get('/posts', fn() => fetchApiJson('posts'));
+$router->post('/api/login', function() {
+    header('Content-Type: application/json');
+    
+    // Read JSON input from raw POST data
+    $data = json_decode(file_get_contents('php://input'), true);
+    $username = $data['username'] ?? '';
+    $password = $data['password'] ?? '';
+
+    if(Session::login($username, $password)){
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(401);
+        echo json_encode(['error' => 'Invalid credentials']);
+    }
+});
 
 // Auth Routes
 $router->get('/login', function(): void {
     view('login');
 });
+$router->get('/register', function(): void {
+    view('register');
+});
+$router->post('/register', function(): void {
 $router->post('/logout', function(): void {
     Session::logout();
     header('Location: /');

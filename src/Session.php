@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Exception;
 class Session
 {
     public static function get(string $key)
@@ -37,40 +38,46 @@ class Session
 
     public static function register(string $username, string $password): void
     {
-        $db = Database::getInstance();
-        // Check if user already exists
-        $existingUser = $db->fetchOne("select * from users where username = :username", [
-            'username' => $username,
-        ]);
-        if ($existingUser) {
-            throw new \Exception("User already exists");
+        try {
+            $db = Database::getInstance();
+            // Check if user already exists
+            $existingUser = $db->fetchOne("select * from users where username = :username", [
+                'username' => $username,
+            ]);
+            if ($existingUser) {
+                throw new Exception("User already exists");
+            }
+            $db->query("insert into users (username, password) values (:username, :password)", [
+                'username' => $username,
+                'password' => password_hash($password, PASSWORD_DEFAULT)
+            ]);
+            self::login($username, $password);
+        } catch (Exception $e) {
+            echo "Registration failed: " . $e->getMessage();
         }
-        $db->query("insert into users (username, password) values (:username, :password)", [
-            'username' => $username,
-            'password' => password_hash($password, PASSWORD_DEFAULT)
-        ]);
-        self::login($username, $password);
     }
 
-    public static function login(string $username, $password): void
+    public static function login(string $username, $password): string|bool
     {
         try {
             $user = Database::getInstance()->fetchOne("select * from users where username = :username", [
                 'username' => $username,
             ]);
 
-            if (!$user) throw new \Exception("User not found");
+            if (!$user) throw new Exception("User not found");
 
             if (!password_verify($password, $user['password'])) {
-                throw new \Exception("Invalid password");
+                throw new Exception("Invalid password");
             }
             
             self::set('user', [
                 'username' => $user['username'],
             ]);
-        } catch (\Exception $e) {
-            throw new \Exception("Login failed: " . $e->getMessage());
+            return json_encode(['success' => true]);
+            
+        } catch (Exception $e) {
+            http_response_code(401);
+            return json_encode(['success' => false, 'message' => "Login failed: " . $e->getMessage()]);
         }
-
     }
 }
