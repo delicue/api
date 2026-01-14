@@ -23,7 +23,7 @@ class Session
 
     public static function isLoggedIn(): bool
     {
-        return isset($_SESSION['user']);
+        return isset($_SESSION['username']);
     }
 
     public static function logout(): void
