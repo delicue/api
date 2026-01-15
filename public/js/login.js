@@ -1,38 +1,33 @@
 /* Login */
-function handleLoginForm(elements = { usernameInputId, passwordInputId, formdId, messageDisplayId }) {
-    const { usernameInputId, passwordInputId, formId, messageDisplayId } = elements;
-    const form = document.getElementById(formId);
-
-    console.log('Login form handler initialized with elements:', elements);
+function handleLoginForm() {
+    const form = document.getElementById('loginForm');
+    // const formData = new FormData(form);
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         console.log('Login button clicked');
         try {
-            const usernameInput = document.getElementById(usernameInputId);
-            const passwordInput = document.getElementById(passwordInputId);
-            console.log('Username:', usernameInput.value);
-            console.log('Password:', passwordInput.value);
+            // const username = formData.get('username');
+            // const password = formData.get('password');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDisplayId = 'messageDisplay';
+            console.log('Username:', username);
+            console.log('Password:', password);
             const response = await fetch('login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username: usernameInput.value, password: passwordInput.value }),
+                body: JSON.stringify({ username: username, password: password }),
             });
             const data = await response.json();
             console.log('Login response:', data);
             document.getElementById(messageDisplayId).textContent = data.message;
+            window.location.href = '/';
         } catch (error) {
             console.error('Error during login:', error);
         }
     });
 }
 
-const loginElements = {
-    usernameInputId: 'username',
-    passwordInputId: 'password',
-    formId: 'loginForm',
-    messageDisplayId: 'messageDisplay',
-};
-
-handleLoginForm(loginElements);
+handleLoginForm();

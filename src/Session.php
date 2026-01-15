@@ -23,7 +23,7 @@ class Session
 
     public static function isLoggedIn(): bool
     {
-        return isset($_SESSION['username']);
+        return isset($_SESSION['user']);
     }
 
     public static function logout(): void
@@ -36,7 +36,7 @@ class Session
         return self::get('user');
     }
 
-    public static function register(string $username, string $password): void
+    public static function register(string $username, string $password)
     {
         try {
             $db = Database::getInstance();
@@ -44,16 +44,24 @@ class Session
             $existingUser = $db->fetchOne("select * from users where username = :username", [
                 'username' => $username,
             ]);
+
             if ($existingUser) {
                 throw new Exception("User already exists");
             }
-            $db->query("insert into users (username, password) values (:username, :password)", [
-                'username' => $username,
-                'password' => password_hash($password, PASSWORD_DEFAULT)
-            ]);
-            self::login($username, $password);
+            else {
+                Log::info("Registering new user: $username");
+                
+                $db->query("insert into users (username, password) values (:username, :password)", [
+                    'username' => $username,
+                    'password' => password_hash($password, PASSWORD_DEFAULT)
+                ]);
+                http_response_code(200);
+                return json_encode(['success' => true]);
+            }
         } catch (Exception $e) {
-            echo "Registration failed: " . $e->getMessage();
+            Log::error("Registration failed for user $username: " . $e->getMessage());
+            http_response_code(401);
+            return json_encode(['success' => false, 'message' => "Registration failed: " . $e->getMessage()]);
         }
     }
 
@@ -64,10 +72,8 @@ class Session
                 'username' => $username,
             ]);
 
-            if (!$user) throw new Exception("User not found");
-
-            if (!password_verify($password, $user['password'])) {
-                throw new Exception("Invalid password");
+            if (!$user || !password_verify($password, $user['password'])) {
+                throw new Exception("Invalid username or password");
             }
             
             self::set('user', [

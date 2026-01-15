@@ -50,8 +50,7 @@ $router->get('/login', function(): void {
 });
 $router->post('/login', function() {
     // Read JSON input from raw POST data
-    // $data = json_decode(file_get_contents('php://input'), true);
-    $data = $_POST;
+    $data = json_decode(file_get_contents('php://input'), true);
     Log::info("Received login request with data: " . json_encode($data));
     $username = $data['username'] ?? '';
     $password = $data['password'] ?? '';
@@ -67,13 +66,14 @@ $router->get('/register', function(): void {
     view('register');
 });
 $router->post('/register', function(): void {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+    // Read JSON input from raw POST data
+    $data = json_decode(file_get_contents('php://input'), true);
+    Log::info("Received registration request with data: " . json_encode($data));
+    $username = $data['username'] ?? '';
+    $password = $data['password'] ?? '';
 
     try {
-        Session::register($username, $password);
-        header('Location: /');
-        exit();
+        echo Session::register($username, $password);
     } catch (Exception $e) {
         header('Content-Type: text/html');
         view('register', ['error' => $e->getMessage()]);

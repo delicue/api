@@ -10,7 +10,7 @@
         </div>
         
         <div class="space-y-4">
-            <button id="request-api-key" type="button" class="w-full cursor-grab bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-3 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800">
+            <button id="request-api-key" type="button" class="w-full bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white cursor-pointer font-semibold py-3 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800">
                 Generate New API Key
             </button>
 
@@ -29,12 +29,12 @@
         <h2 class="text-2xl font-bold text-white mb-6">Fetch Data</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Fetch Users Button -->
-            <button id="fetch-users" class="group bg-linear-to-br from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-semibold py-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-800 shadow-lg hover:shadow-emerald-500/20">
+            <button id="fetch-users" class="group bg-linear-to-br from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white cursor-pointer font-semibold py-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-800 shadow-lg hover:shadow-emerald-500/20">
                 <span class="text-lg">👥 Fetch Users</span>
             </button>
             
             <!-- Fetch Posts Button -->
-            <button id="fetch-posts" class="group bg-linear-to-br from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white font-semibold py-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-800 shadow-lg hover:shadow-purple-500/20">
+            <button id="fetch-posts" class="group bg-linear-to-br from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white cursor-pointer font-semibold py-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-800 shadow-lg hover:shadow-purple-500/20">
                 <span class="text-lg">📝 Fetch Posts</span>
             </button>
         </div>
