@@ -18,12 +18,23 @@ class Router {
         $this->data[$uri] = $data;
     }
 
-    public function get($uri, $action, $data = []): void {
+    public function get($uri, $action, $data = []): Router {
         $this->register($uri, 'GET', $action, $data);
+        return $this;
     }
 
-    public function post($uri, $action, $data = []): void {
+    public function post($uri, $action, $data = []): Router {
         $this->register($uri, 'POST', $action, $data);
+        return $this;
+    }
+
+    public function authenticate(): Router {
+        // user must be logged in to access routes
+        if(!Session::isLoggedIn()) {
+            header('Location: /login');
+            exit();
+        }
+        return $this;
     }
 
     /**

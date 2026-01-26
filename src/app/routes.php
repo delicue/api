@@ -6,8 +6,8 @@ use App\Router;
 use App\Session;
 
 $router = new Router();
-$uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-$method = $_SERVER['REQUEST_METHOD'];
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/')['path'];
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 function getView($uri): void {  
     global $router;
@@ -20,7 +20,7 @@ function fetchApiJson($table): void {
     $apiKey = $_GET['apiKey'] ?? null;
     $db = DB::getInstance();
 
-    if($apiKey && $db->isValidApiKey($apiKey)){
+    if(Session::isLoggedIn() && $apiKey && $db->isValidApiKey($apiKey)){
         header('Content-Type: application/json');
         echo json_encode($db->fetchAll("select * from {$table}"));
     } else {
@@ -35,6 +35,7 @@ function fetchApiJson($table): void {
 // getView('/test');
 
 // Normal Routes
+
 $router->get('/', function(): void {
     header('Content-Type: text/html');
     view('index');
@@ -84,19 +85,23 @@ $router->post('/logout', function(): void {
     header('Location: /');
     exit();
 });
-$router->post('/request-api-key', function(): void {
+$router->get('/request-api-key', function(): void {
+    header('Content-Type: application/json');
     $db = DB::getInstance();
     if($db->count('api_keys') >= 10){
-        header('Content-Type: application/json');
         http_response_code(429);
         echo json_encode(['429' => "API Key distribution limit reached."]);
+        return;
+    }
+    else if(!Session::isLoggedIn()){
+        http_response_code(403);
+        echo json_encode(['403' => "Unauthorized. Please log in to request an API key."]);
         return;
     }
     $newApiKey = bin2hex(random_bytes(16));
     $db->createApiKey($newApiKey);
 
-    header('Content-Type: text/plain');
-    echo $newApiKey;
-});
+    echo json_encode(['api_key' => $newApiKey]);
+})->authenticate();
 
 $router->dispatch($uri, $method);
