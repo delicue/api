@@ -19,9 +19,7 @@ function requestApiKey(url, triggerElementId, event, targetElementId) {
     const triggerElement = document.getElementById(triggerElementId);
     triggerElement.addEventListener(event, async () => {
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-            });
+            const response = await fetch(url);
             const data = await response.text();
             console.log(data);
             document.getElementById(targetElementId).textContent = data;
