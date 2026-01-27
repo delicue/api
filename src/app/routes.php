@@ -37,6 +37,10 @@ function fetchApiJson($table): void {
 // Normal Routes
 
 $router->get('/', function(): void {
+    if(!Session::isLoggedIn()) {
+        header('Location: /login');
+        exit();
+    }
     header('Content-Type: text/html');
     view('index');
 });
@@ -102,6 +106,6 @@ $router->get('/request-api-key', function(): void {
     $db->createApiKey($newApiKey);
 
     echo json_encode(['api_key' => $newApiKey]);
-})->authenticate();
+});
 
 $router->dispatch($uri, $method);
